@@ -2,21 +2,16 @@
 layout: post
 title: "Creating advanced plots in R programming language"
 subtitle: "to show what R programming language with ggplot library can do"
-date: 2020-01-26 23:45:13 -0400
+date: 2020-05-08 23:45:13 -0400
 background: '/img/posts/advanced_plot/final_hq.png'
 ---
-
-# In this blog post we are replicating the picture below which was originally created in SAS:
+# In this blog post we are replicating the picture below which was originally created in SAS
 ![Picture created in SAS](/img/posts/advanced_plot/sas_plot.png)
 
-Let’s first generate some dummy data:
+## Let’s first generate some dummy data:
 
 ``` r
 library(tidyverse)
-```
-
-
-``` r
 n_pat <- 25
 patient <- 1:n_pat
 treatment <- sample(c("Drug A", "Drug B"), n_pat, replace=TRUE)
@@ -42,14 +37,10 @@ head(df)
     
     
     
-    
-    
-    
-
 
 We have a patient number, treatment group and change in tumor size in
 our dataset. We also have collected some biomarkers so we may inspect if
-there are some correlations.
+we find some interesting correlations.
 
 In the picture above we have 3 distinct plots:
 
@@ -57,7 +48,7 @@ In the picture above we have 3 distinct plots:
 2.  Highlighted genes in biomarkers
 3.  Percentage of selected genes from each one of the biomarkers.
 
-### First picture
+### First plot
 
 Plot is fairly standard barplot but there is some notable options that
 we need to set. First of all we notice that there is text indicating the
@@ -191,7 +182,7 @@ p2
 
 ![](/img/posts/advanced_plot/second_plot.png)<!-- -->
 
-### Third plot
+### Last plot
 
 This is the most complicated plot out of all three. In this plot there is a grid
 that is divided into subgroups by the biomarker groups. Certain grids
@@ -242,20 +233,16 @@ p3
 
 ![](/img/posts/advanced_plot/third_plot.png)<!-- -->
 
-# Combining the plots
+### Combining the plots
 
 Now all there is left to this is to combine all three plots so that all
 the columns and rows are lined up. For this we are using library called
-cowplot. Cowplot is a library that
+cowplot. According to documentation of cowplot it is a library that
 
 > “provides various features that help with creating publication-quality
 > figures, such as a set of themes, functions to align plots and arrange
 > them into complex compound figures, and functions that make it easy to
 > annotate plots and or mix plots with images.”
-
-``` r
-library(cowplot)
-```
 
 Function plot\_grid from cowplot package is used for creating table like
 layouts of plots. We can spesify how the plots are arranged and aligned
@@ -265,6 +252,7 @@ First we need to remove the legend from the first plot so the aligning
 works better and add it back later.
 
 ``` r
+library(cowplot)
 p1_legend <- get_legend(p1)
 p1 <- p1 + theme(legend.position = "none")
 ```
@@ -290,7 +278,13 @@ ggdraw(plot_grid(
 
 ![](/img/posts/advanced_plot/final_plot.png)<!-- -->
 
+
 Finally we have created a plot that we tried to mimic.
-================
+
+Code it took to recreate this figure is comparatively smaller than the code used
+for creating it originally in SAS. I will be posting the original SAS code in our
+github pages and I will update the URL in here after that. One downside is that
+the plots need quite a bit of extra options and tweaking to get them looking right.
+
 Mikael Roto
 8/4/2021
