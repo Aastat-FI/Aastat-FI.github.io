@@ -44,6 +44,7 @@
 * REASON FOR CHANGE    :
 *=======================================================================*/;
 
+
 /* Creating an example data */
 %macro RandBetween(min, max);
    (&min + floor((1+&max-&min)*rand("uniform")))
