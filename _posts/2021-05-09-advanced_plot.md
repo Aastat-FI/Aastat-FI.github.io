@@ -281,10 +281,13 @@ ggdraw(plot_grid(
 
 Finally we have created a plot that we tried to mimic.
 
-Code it took to recreate this figure is comparatively smaller than the code used
+Code it took to recreate this figure is a bit shorter than the code used
 for creating it originally in SAS. I will be posting the original SAS code in our
 github pages and I will update the URL in here after that. One downside is that
 the plots need quite a bit of extra options and tweaking to get them looking right.
+
+EDIT: 
+[Link to the SAS code](https://github.com/Aastat-FI/Aastat-FI.github.io/blob/master/extra_post_material/sas_code.sas)
 
 Mikael Roto
 8/4/2021
