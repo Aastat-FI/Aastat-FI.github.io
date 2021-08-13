@@ -290,4 +290,4 @@ EDIT:
 [Link to the SAS code](https://github.com/Aastat-FI/Aastat-FI.github.io/blob/master/extra_post_material/sas_code.sas)
 
 Mikael Roto
-8/4/2021
+4/8/2021
