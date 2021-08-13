@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Creating advanced plots in R programming language"
-subtitle: "to show what R programming language with ggplot library can do"
+subtitle: "To show what R programming language with ggplot library can do"
 date: 2020-05-08 23:45:13 -0400
 background: '/img/posts/advanced_plot/final_hq.png'
 ---
