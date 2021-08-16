@@ -2,12 +2,12 @@
 layout: post
 title: "More advanced plots"
 subtitle: "Creating fancy figures"
-background: '/img/posts/second_plot/saskuva.jpg'
+background: '/img/posts/second_plot/plot_final.png'
 ---
 
-## In this blog post we are replicating the picture below originally created in SAS
+## In this blog post we are making the picture below.
 
-![Original SAS plot](/img/posts/second_plot/saskuva.jpg)<!-- -->
+![Original SAS plot](/img/posts/second_plot/plot_final.png)<!-- -->
 
 We will be using library called tidyverse in this tutorial. Tidyverse is a collection of 
 packages that share underlying design philosophy, grammar and data structures. Dplyr from
@@ -25,25 +25,25 @@ Lets first generate some data to work with that we can use in our figure.
 n_pat <- 25
 patient <- 1:n_pat
 censoring <- ceiling(rexp(n_pat, 1/30))
-tumour_shrink <- (rbeta(n_pat, 2, 2) - 0.5) * 100
+tumor_shrink <- (rbeta(n_pat, 2, 2) - 0.5) * 100
 
-n_cytokines <- 15
-cytokines <- paste("Cytokine", 1:n_cytokines)
+n_parameters <- 15
+parameters <- paste("Parameter", 1:n_parameters)
 
 response <- sample(c("PR", "NE", "CR", "PD", "SD"), size=n_pat,
                    replace = T)
 
 missing_combination <- sample(c(TRUE, FALSE), size=n_pat, replace=T, prob = c(0.1, 0.9))
 
-changes <- matrix(runif(n_pat * n_cytokines, 1, 100), nrow=n_pat, ncol=n_cytokines)
+changes <- matrix(runif(n_pat * n_parameters, 1, 100), nrow=n_pat, ncol=n_parameters)
 changes[sample(1:dim(changes)[1], 4, replace = FALSE), sample(1:dim(changes)[2], 5, replace = F)] <- NA
 
-df <- data.frame(patient, censoring, tumour_shrink, changes, missing_combination)
-colnames(df) <- c("patient", "censoring", "tumour_shrink", cytokines, "missing_combination")
+df <- data.frame(patient, censoring, tumor_shrink, changes, missing_combination)
+colnames(df) <- c("patient", "censoring", "tumor_shrink", parameters, "missing_combination")
 head(df)
 ```
 
-    ##    patient censoring tumour_shrink Cytokine 1 Cytokine 2 Cytokine 3 Cytokine 4  Cytokine 5 Cytokine 6 Cytokine 7 Cytokine 8 Cytokine 9 Cytokine 10  Cytokine 11 Cytokine 12 Cytokine 13 Cytokine 14 Cytokine 15 
+    ##    patient censoring tumor_shrink Parameter 1 Parameter 2 Parameter 3 Parameter 4  Parameter 5 Parameter 6 Parameter 7 Parameter 8 Parameter 9 Parameter 10  Parameter 11 Parameter 12 Parameter 13 Parameter 14 Parameter 15 
     ## 1        1        50   -33.5020150  76.692716  12.905816  51.320504    6.95165    3.702113  80.529008  52.739191  35.523220  20.034390   98.995443     52.34731   89.944140   22.969047   86.286218   37.865428
     ## 2        2        18   -34.3932674  71.841917  94.354270   4.175872   40.83416   78.104306  95.018387  86.157191  44.547260  66.223263    4.477640     19.13054   57.357747   66.792806   57.220612   71.090477
     ## 3        3        19    25.5744672         NA         NA  75.877590   51.54885   59.516219  47.779858  22.964046  20.790171  27.846610   46.499506           NA   42.132381   26.674702          NA          NA
@@ -60,7 +60,7 @@ head(df)
 Here we have generated a dataframe containing example patients, how their
 tumor size has changed from start of the study until the end of study
 and time after they were censored from the study (quit, died, etc). On
-top of that we also have measurements on different cytokine levels.
+top of that we also have measurements on different anonymized parameters noted by Parameter [number].
 Note that data has missing values indicated by NA. In the dataframe 
 there is a column called missing\_combination which 
 indicates that there was problems while gathering the data. TRUE values indicates 
@@ -81,7 +81,7 @@ p1 <- df %>%
     response == "PD" ~ "red",
     response == "SD" ~ "yellow"
   )) %>% 
-  arrange(tumour_shrink) %>% 
+  arrange(tumor_shrink) %>% 
   mutate(patient = factor(patient, levels=patient)) %>% 
   ggplot(aes(x=patient, y=1, fill=color)) +
   geom_raster() +
@@ -124,7 +124,7 @@ Onto the next plot!
 
 ``` r
 p2 <- df %>%
-  arrange(tumour_shrink) %>% 
+  arrange(tumor_shrink) %>% 
   mutate(patient = factor(patient, levels=patient)) %>% 
   mutate(color = ifelse(missing_combination, "white", "gray")) %>% 
   ggplot(aes(x=factor(patient), y=1, fill=color)) +
@@ -148,17 +148,17 @@ p2
 This plot is again similar to the previous two and the code seems self explatory 
 if you understood how to make the first two. Main differences in this section 
 are modifying the scale\_fill\_gradient() so we get a nice gradient of colors 
-from minimum of tumour\_shrink variable to the maximum value.
+from minimum of tumor\_shrink variable to the maximum value.
 
 
 ``` r
 p3 <- df %>% 
-  arrange(tumour_shrink) %>% 
+  arrange(tumor_shrink) %>% 
   mutate(patient = factor(patient, levels=patient)) %>% 
-  ggplot(aes(x=patient, y=1, fill=tumour_shrink)) +
+  ggplot(aes(x=patient, y=1, fill=tumor_shrink)) +
   geom_raster(alpha=0.8) +
   geom_tile(color="black", size=1) +
-  geom_text(aes(label=formatC(tumour_shrink, 0, format="f")), 
+  geom_text(aes(label=formatC(tumor_shrink, 0, format="f")), 
             size=3) +
   theme(axis.text = element_blank(),
         axis.title = element_blank(), 
@@ -167,7 +167,7 @@ p3 <- df %>%
         plot.margin = unit(c(-5, 0, 0, 0), "pt"),
         legend.position = "none") +
   scale_fill_gradient(low="green", high="red") +
-  labs(y="Tumour shrink")+
+  labs(y="Tumor shrink")+
   coord_fixed()
 p3
 ```
@@ -193,27 +193,25 @@ normalize <- function(x, na.rm = TRUE) {
 ```
 
 In the next block we will pivot the dataframe into long format and apply
-our normalization function to all not NaN values. We are also creating a
+our normalization function to all non NaN values. We are also creating a
 column called pat which is factor(patient) but with numerical columns.
 This was needed so we can sort the values in the last plot with the
-tumour\_shrink values. To mimic some squares flagged with stars in the
-original picture I decided to add column called “important” which we
-flag with star. It could be anything we want but I decided that I would
-flag values that had big absolute scaled values.
+tumor\_shrink values. To add more things to the plot I decided to add markers 
+to the plot that could indicate some importance. For this exercise I have flagged cells that have absolute scaled value higher than 70. 
 
 ``` r
 cdf <- df %>% 
-  pivot_longer(all_of(cytokines)) %>% 
+  pivot_longer(all_of(parameters)) %>% 
   mutate(scaled_val = normalize(value)) %>% 
   mutate(important = ifelse((abs(scaled_val) > 85), TRUE, FALSE)) %>% 
   replace_na(list(important = FALSE)) %>% 
-  arrange(tumour_shrink) %>% 
+  arrange(tumor_shrink) %>% 
   mutate(pat=factor(patient, levels = rev(unique(patient)), ordered=TRUE))
 ```
 
 With most of the work done with creating the dataframe that we want to
 plot it is pretty easy to create the plot from that. The plot itself is
-similar to one created in the previous post.
+similar to one created in the [previous post](https://aastat-fi.github.io/2020/05/09/advanced_plot.html).
 
 ``` r
 p4 <- cdf %>% 
@@ -222,7 +220,7 @@ p4 <- cdf %>%
   geom_text(data=filter(cdf, important), aes(label="★"), colour="black",
             size=8, vjust=0.2, alpha=0.9) +
   scale_fill_gradient2(low="blue", mid="white", high="red", guide="none") +
-  scale_x_discrete(labels = paste0("Pat ", unique(cdf$patient))) +
+  scale_x_discrete(labels = paste0("Subj ", unique(cdf$patient))) +
   theme(axis.title = element_blank(),
         panel.grid = element_blank(),
         axis.text.x = element_text(angle=-45, hjust=0.3),
@@ -233,7 +231,7 @@ p4
 ![Fourth plot](/img/posts/second_plot/plot4.png)<!-- -->
 
 Now all we need to do is to combine all the plots together. This time
-there is no need to use cowplot as we can use a bit simpler methods from
+there is no need to use cowplot as we can use a bit simpler method from
 library called Patchwork. Patchwork is a brilliant library that allows
 joining plot using arithmetic operations. You may have been wondering
 why we need to specify the plot margins. The three plots on top of the
@@ -247,14 +245,8 @@ p1 / p2 / p3 / p4
 
 ![Final plot](/img/posts/second_plot/plot_final.png)<!-- -->
 
-This mimics the original image pretty good. We also could have made all
-three top plots in a single plotting function call but I think the ideas are more
-easy to generalize to other plots and figures if we do them one by one.
-In this approach we needed to play a a lot with the white space around the plot and
-plot arrangement functions to create tight grouping of plots. Each
-approach has its pros and cons.
 
-Unfortunately for this post we can't publish the original SAS code.
+
 
 Mikael Roto
 14/8/2021
